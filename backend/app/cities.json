@@ -1,0 +1,119 @@
+[
+  {
+    "id": "jakarta",
+    "nama": "Jakarta",
+    "provinsi": "DKI Jakarta",
+    "lat": -6.2146,
+    "lon": 106.8451,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "31.71.03.1001"
+  },
+  {
+    "id": "bandung",
+    "nama": "Bandung",
+    "provinsi": "Jawa Barat",
+    "lat": -6.9175,
+    "lon": 107.6191,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "32.73.04.1001"
+  },
+  {
+    "id": "semarang",
+    "nama": "Semarang",
+    "provinsi": "Jawa Tengah",
+    "lat": -6.9667,
+    "lon": 110.4167,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "33.74.03.1001"
+  },
+  {
+    "id": "yogyakarta",
+    "nama": "Yogyakarta",
+    "provinsi": "DI Yogyakarta",
+    "lat": -7.7956,
+    "lon": 110.3695,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "34.71.01.1001"
+  },
+  {
+    "id": "surabaya",
+    "nama": "Surabaya",
+    "provinsi": "Jawa Timur",
+    "lat": -7.2575,
+    "lon": 112.7521,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "35.78.27.1001"
+  },
+  {
+    "id": "medan",
+    "nama": "Medan",
+    "provinsi": "Sumatera Utara",
+    "lat": 3.5952,
+    "lon": 98.6722,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "12.71.06.1001"
+  },
+  {
+    "id": "palembang",
+    "nama": "Palembang",
+    "provinsi": "Sumatera Selatan",
+    "lat": -2.9761,
+    "lon": 104.7754,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "16.71.03.1001"
+  },
+  {
+    "id": "pontianak",
+    "nama": "Pontianak",
+    "provinsi": "Kalimantan Barat",
+    "lat": -0.0263,
+    "lon": 109.3425,
+    "tz": "Asia/Jakarta",
+    "bmkg_adm4": "61.71.02.1001"
+  },
+  {
+    "id": "balikpapan",
+    "nama": "Balikpapan",
+    "provinsi": "Kalimantan Timur",
+    "lat": -1.2379,
+    "lon": 116.8529,
+    "tz": "Asia/Makassar",
+    "bmkg_adm4": "64.71.01.1001"
+  },
+  {
+    "id": "makassar",
+    "nama": "Makassar",
+    "provinsi": "Sulawesi Selatan",
+    "lat": -5.1477,
+    "lon": 119.4327,
+    "tz": "Asia/Makassar",
+    "bmkg_adm4": "73.71.03.1001"
+  },
+  {
+    "id": "gorontalo",
+    "nama": "Gorontalo",
+    "provinsi": "Gorontalo",
+    "lat": 0.5435,
+    "lon": 123.0568,
+    "tz": "Asia/Makassar",
+    "bmkg_adm4": "75.71.01.1003"
+  },
+  {
+    "id": "denpasar",
+    "nama": "Denpasar",
+    "provinsi": "Bali",
+    "lat": -8.6705,
+    "lon": 115.2126,
+    "tz": "Asia/Makassar",
+    "bmkg_adm4": "51.71.01.1001"
+  },
+  {
+    "id": "jayapura",
+    "nama": "Jayapura",
+    "provinsi": "Papua",
+    "lat": -2.5337,
+    "lon": 140.7181,
+    "tz": "Asia/Jayapura",
+    "bmkg_adm4": "91.71.01.1001"
+  }
+]

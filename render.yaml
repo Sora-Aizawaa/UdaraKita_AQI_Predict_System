@@ -1,0 +1,19 @@
+# Render Blueprint: dibaca otomatis saat memilih "New > Blueprint" di dashboard Render.
+services:
+  - type: web
+    name: udarakita-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    region: singapore          # terdekat dengan Indonesia
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: CORS_ORIGINS      # diisi setelah frontend di Vercel jadi, mis. https://udarakita.vercel.app
+        sync: false
+      - key: CORS_ORIGIN_REGEX # opsional, untuk URL preview Vercel
+        sync: false

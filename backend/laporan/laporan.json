@@ -1,0 +1,2726 @@
+{
+ "judul": "Prediksi US AQI Jakarta (AQI Hari Berikutnya)",
+ "sumber_notebook": "Predicting_Air_Quality_Index_FIXED (2).ipynb",
+ "dibuat": "2026-11-09T13:18",
+ "kesimpulan_md": "**Hasil.** Model final (XGBoost kedalaman 3) memprediksi US AQI besok dengan MAE uji sekitar 8,8 poin dan R² sekitar 0,86, dibanding baseline \"besok = hari ini\" dengan MAE 12,29 dan R² 0,683 (perbaikan MAE sekitar 28%). Ketiga model mengalahkan baseline; urutannya XGBoost, Random Forest, lalu Linear Regression. Angka persisnya dapat bergeser sekitar 0,1 poin antar versi pustaka, jadi pakai angka dari tabel di langkah 20.\n\n**Overfitting.** Selisih MAE latih dan uji pada model final hanya sekitar 1,2 poin, jauh lebih kecil daripada model awal (sekitar 4,7). Tuning tidak menurunkan MAE uji; delapan kombinasi teratas hanya berbeda sekitar 0,2 poin pada validasi, jadi dipilih konfigurasi paling sederhana.\n\n**Fitur.** PM2.5 paling berpengaruh (mengacaknya menaikkan MAE sekitar 12,7 poin), diikuti PM10 dan ozon. Fitur lag dan rata-rata 7 hari menyumbang sangat sedikit setelah polutan hari ini diketahui.\n\n**Kesalahan.** Error terbesar ada pada rentang AQI aktual 101 sampai 150 (MAE sekitar 13) dan pada bulan November sampai Februari (musim hujan, MAE sekitar 10 sampai 11.5, dibanding sekitar 5 sampai 8.6 pada Juni sampai Oktober). Arah perubahan AQI yang besar (20 poin atau lebih) ditebak benar pada sekitar 93% harinya (45 hari); yang meleset terutama **besarnya** perubahan, bukan arahnya.\n\n**Keterbatasan.**\n- Data berasal dari model CAMS (Open-Meteo), bukan sensor stasiun.\n- Dua hari (2022-12-14 dan 12-15) bernilai tidak wajar dan diimputasi dengan interpolasi, jadi bukan data nyata.\n- Hanya satu split uji (258 hari, Juni 2025 sampai Februari 2026); periode Maret sampai Mei tidak ada di data uji.\n- Model butuh riwayat minimal 7 hari, dan belum memakai data cuaca (hujan, angin) yang kemungkinan membantu memprediksi penurunan mendadak.",
+ "ringkasan_kota": [
+  {
+   "kota": "jakarta",
+   "mae_baseline": 11.92,
+   "mae_model": 8.92,
+   "perbaikan_persen": 25.2,
+   "perbaikan_kota_baru_persen": -8.6,
+   "bias": -2.99,
+   "tervalidasi": true
+  },
+  {
+   "kota": "bandung",
+   "mae_baseline": 9.67,
+   "mae_model": 8.09,
+   "perbaikan_persen": 16.3,
+   "perbaikan_kota_baru_persen": 10.6,
+   "bias": -3.98,
+   "tervalidasi": true
+  },
+  {
+   "kota": "semarang",
+   "mae_baseline": 14.56,
+   "mae_model": 12.96,
+   "perbaikan_persen": 11.0,
+   "perbaikan_kota_baru_persen": -19.4,
+   "bias": -2.51,
+   "tervalidasi": false
+  },
+  {
+   "kota": "yogyakarta",
+   "mae_baseline": 22.43,
+   "mae_model": 14.47,
+   "perbaikan_persen": 35.5,
+   "perbaikan_kota_baru_persen": 32.9,
+   "bias": -3.69,
+   "tervalidasi": true
+  },
+  {
+   "kota": "surabaya",
+   "mae_baseline": 14.02,
+   "mae_model": 10.43,
+   "perbaikan_persen": 25.6,
+   "perbaikan_kota_baru_persen": 24.3,
+   "bias": 0.33,
+   "tervalidasi": true
+  },
+  {
+   "kota": "medan",
+   "mae_baseline": 14.32,
+   "mae_model": 9.93,
+   "perbaikan_persen": 30.7,
+   "perbaikan_kota_baru_persen": 27.1,
+   "bias": -0.58,
+   "tervalidasi": true
+  },
+  {
+   "kota": "palembang",
+   "mae_baseline": 7.72,
+   "mae_model": 5.71,
+   "perbaikan_persen": 26.0,
+   "perbaikan_kota_baru_persen": 24.9,
+   "bias": -1.21,
+   "tervalidasi": true
+  },
+  {
+   "kota": "pontianak",
+   "mae_baseline": 11.37,
+   "mae_model": 8.43,
+   "perbaikan_persen": 25.9,
+   "perbaikan_kota_baru_persen": 24.4,
+   "bias": -2.71,
+   "tervalidasi": true
+  },
+  {
+   "kota": "balikpapan",
+   "mae_baseline": 5.69,
+   "mae_model": 3.73,
+   "perbaikan_persen": 34.4,
+   "perbaikan_kota_baru_persen": 32.3,
+   "bias": 0.65,
+   "tervalidasi": true
+  },
+  {
+   "kota": "makassar",
+   "mae_baseline": 7.91,
+   "mae_model": 4.81,
+   "perbaikan_persen": 39.2,
+   "perbaikan_kota_baru_persen": 38.9,
+   "bias": -0.51,
+   "tervalidasi": true
+  },
+  {
+   "kota": "denpasar",
+   "mae_baseline": 5.35,
+   "mae_model": 4.07,
+   "perbaikan_persen": 23.9,
+   "perbaikan_kota_baru_persen": 20.4,
+   "bias": 0.66,
+   "tervalidasi": true
+  },
+  {
+   "kota": "jayapura",
+   "mae_baseline": 6.87,
+   "mae_model": 4.61,
+   "perbaikan_persen": 32.9,
+   "perbaikan_kota_baru_persen": 22.5,
+   "bias": 1.34,
+   "tervalidasi": true
+  }
+ ],
+ "tab": [
+  {
+   "id": "data",
+   "nama": "Data dan pembersihan",
+   "bagian": [
+    {
+     "nomor": 2,
+     "judul": "Load Data",
+     "item": [
+      {
+       "jenis": "teks",
+       "isi": "Saving jakarta-id-1642911.zip to jakarta-id-1642911 (1).zip\nterupload: jakarta-id-1642911 (1).zip",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "['air_quality_historical.csv', 'city_info.csv', 'dataset-metadata.json', 'data_dictionary.csv', 'README.md']\n/content/aqi_jakarta/city_info.csv\n/content/aqi_jakarta/README.md\n/content/aqi_jakarta/air_quality_historical.csv\n/content/aqi_jakarta/dataset-metadata.json\n/content/aqi_jakarta/data_dictionary.csv",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "(1298, 12)",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "date",
+        "pm10",
+        "pm2_5",
+        "carbon_monoxide",
+        "nitrogen_dioxide",
+        "sulphur_dioxide",
+        "ozone",
+        "aerosol_optical_depth",
+        "dust",
+        "uv_index",
+        "us_aqi",
+        "european_aqi"
+       ],
+       "baris": [
+        [
+         "0",
+         "2022-08-01",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN"
+        ],
+        [
+         "1",
+         "2022-08-02",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN"
+        ],
+        [
+         "2",
+         "2022-08-03",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN",
+         "NaN"
+        ],
+        [
+         "3",
+         "2022-08-04",
+         "120.764706",
+         "83.923529",
+         "2635.176471",
+         "82.235294",
+         "23.894118",
+         "186.235294",
+         "1.228824",
+         "0.0",
+         "1.473529",
+         "NaN",
+         "NaN"
+        ],
+        [
+         "4",
+         "2022-08-05",
+         "118.725000",
+         "82.300000",
+         "3027.375000",
+         "96.512500",
+         "24.420833",
+         "118.583333",
+         "1.030417",
+         "0.0",
+         "1.127083",
+         "187.588235",
+         "109.588235"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "<class 'pandas.core.frame.DataFrame'>\nRangeIndex: 1298 entries, 0 to 1297\nData columns (total 12 columns):\n #   Column                 Non-Null Count  Dtype  \n---  ------                 --------------  -----  \n 0   date                   1298 non-null   object \n 1   pm10                   1295 non-null   float64\n 2   pm2_5                  1295 non-null   float64\n 3   carbon_monoxide        1295 non-null   float64\n 4   nitrogen_dioxide       1295 non-null   float64\n 5   sulphur_dioxide        1295 non-null   float64\n 6   ozone                  1295 non-null   float64\n 7   aerosol_optical_depth  1295 non-null   float64\n 8   dust                   1295 non-null   float64\n 9   uv_index               1295 non-null   float64\n 10  us_aqi                 1294 non-null   float64\n 11  european_aqi           1294 non-null   float64\ndtypes: float64(11), object(1)\nmemory usage: 121.8+ KB",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 3,
+     "judul": "Missing Values",
+     "item": [
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "nilai"
+       ],
+       "baris": [
+        [
+         "date",
+         "0"
+        ],
+        [
+         "pm10",
+         "3"
+        ],
+        [
+         "pm2_5",
+         "3"
+        ],
+        [
+         "carbon_monoxide",
+         "3"
+        ],
+        [
+         "nitrogen_dioxide",
+         "3"
+        ],
+        [
+         "sulphur_dioxide",
+         "3"
+        ],
+        [
+         "ozone",
+         "3"
+        ],
+        [
+         "aerosol_optical_depth",
+         "3"
+        ],
+        [
+         "dust",
+         "3"
+        ],
+        [
+         "uv_index",
+         "3"
+        ],
+        [
+         "us_aqi",
+         "4"
+        ],
+        [
+         "european_aqi",
+         "4"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "(1294, 12)\n0",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "nilai"
+       ],
+       "baris": [
+        [
+         "date",
+         "0"
+        ],
+        [
+         "pm10",
+         "0"
+        ],
+        [
+         "pm2_5",
+         "0"
+        ],
+        [
+         "carbon_monoxide",
+         "0"
+        ],
+        [
+         "nitrogen_dioxide",
+         "0"
+        ],
+        [
+         "sulphur_dioxide",
+         "0"
+        ],
+        [
+         "ozone",
+         "0"
+        ],
+        [
+         "aerosol_optical_depth",
+         "0"
+        ],
+        [
+         "dust",
+         "0"
+        ],
+        [
+         "uv_index",
+         "0"
+        ],
+        [
+         "us_aqi",
+         "0"
+        ],
+        [
+         "european_aqi",
+         "0"
+        ]
+       ],
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 4,
+     "judul": "Metadata Kota dan Kamus Data",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "File `city_info.csv` (1 baris) dan `data_dictionary.csv` hanya untuk dibaca, tidak dipakai sebagai fitur."
+      },
+      {
+       "jenis": "teks",
+       "isi": "                      0",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "nilai"
+       ],
+       "baris": [
+        [
+         "geoname_id",
+         "1642911"
+        ],
+        [
+         "city_name",
+         "Jakarta"
+        ],
+        [
+         "country_code",
+         "ID"
+        ],
+        [
+         "admin1",
+         "4"
+        ],
+        [
+         "admin2",
+         "NaN"
+        ],
+        [
+         "feature_code",
+         "PPLC"
+        ],
+        [
+         "latitude",
+         "-6.21462"
+        ],
+        [
+         "longitude",
+         "106.84513"
+        ],
+        [
+         "population",
+         "8540121"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "                   column        unit                  description\n0              geoname_id         NaN  GeoNames unique identifier.\n1               city_name         NaN     City name from GeoNames.\n2            country_code         NaN            ISO country code.\n3                  admin1         NaN        First admin division.\n4                  admin2         NaN       Second admin division.\n5            feature_code         NaN       GeoNames feature code.\n6                latitude     degrees    Latitude decimal degrees.\n7               longitude     degrees   Longitude decimal degrees.\n8              population      people    Population from GeoNames.\n9                    date  YYYY-MM-DD                  Time index.\n10                  pm2_5       µg/m³         PM2.5 concentration.\n11                   pm10       µg/m³          PM10 concentration.\n12                  ozone       µg/m³         Ozone concentration.\n13       nitrogen_dioxide       µg/m³           NO2 concentration.\n14        sulphur_dioxide       µg/m³           SO2 concentration.\n15        carbon_monoxide       µg/m³            CO concentration.\n16                 us_aqi       index                US AQI index.\n17           european_aqi       index          European AQI index.\n18               uv_index       index                    UV index.\n19  aerosol_optical_depth       index       Aerosol optical depth.\n20                   dust       µg/m³          Dust concentration.",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 5,
+     "judul": "Tipe Data dan Index Tanggal",
+     "item": [
+      {
+       "jenis": "teks",
+       "isi": "(1294, 11)\n2022-08-05 sampai 2026-02-18",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "count",
+        "mean",
+        "std",
+        "min",
+        "25%",
+        "50%",
+        "75%",
+        "max"
+       ],
+       "baris": [
+        [
+         "pm10",
+         "1294.0",
+         "82.950609",
+         "33.102482",
+         "0.920833",
+         "57.839583",
+         "85.366667",
+         "105.955208",
+         "196.954167"
+        ],
+        [
+         "pm2_5",
+         "1294.0",
+         "64.856772",
+         "24.903465",
+         "0.641667",
+         "47.503125",
+         "65.862500",
+         "81.408333",
+         "150.091667"
+        ],
+        [
+         "carbon_monoxide",
+         "1294.0",
+         "2302.981163",
+         "946.630404",
+         "59.333333",
+         "1643.395833",
+         "2112.750000",
+         "2862.343750",
+         "6181.041667"
+        ],
+        [
+         "nitrogen_dioxide",
+         "1294.0",
+         "62.831247",
+         "23.494026",
+         "0.000000",
+         "47.608333",
+         "59.337500",
+         "75.758333",
+         "158.991667"
+        ],
+        [
+         "sulphur_dioxide",
+         "1294.0",
+         "38.117790",
+         "15.800615",
+         "0.479167",
+         "25.323958",
+         "42.089583",
+         "49.564583",
+         "79.575000"
+        ],
+        [
+         "ozone",
+         "1294.0",
+         "71.894771",
+         "34.597651",
+         "9.625000",
+         "38.062500",
+         "79.812500",
+         "99.604167",
+         "161.958333"
+        ],
+        [
+         "aerosol_optical_depth",
+         "1294.0",
+         "0.723280",
+         "0.373043",
+         "0.035417",
+         "0.429688",
+         "0.696875",
+         "0.975937",
+         "2.149167"
+        ],
+        [
+         "dust",
+         "1294.0",
+         "0.028690",
+         "0.182161",
+         "0.000000",
+         "0.000000",
+         "0.000000",
+         "0.000000",
+         "3.833333"
+        ],
+        [
+         "uv_index",
+         "1294.0",
+         "1.588761",
+         "0.431211",
+         "0.379167",
+         "1.279167",
+         "1.568750",
+         "1.897396",
+         "3.091667"
+        ],
+        [
+         "us_aqi",
+         "1294.0",
+         "147.902503",
+         "34.977798",
+         "13.750000",
+         "132.343750",
+         "160.145833",
+         "172.083333",
+         "203.000000"
+        ],
+        [
+         "european_aqi",
+         "1294.0",
+         "90.953411",
+         "22.087147",
+         "12.500000",
+         "78.510417",
+         "92.520833",
+         "105.083333",
+         "155.041667"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "Index(['pm10', 'pm2_5', 'carbon_monoxide', 'nitrogen_dioxide',\n       'sulphur_dioxide', 'ozone', 'aerosol_optical_depth', 'dust', 'uv_index',\n       'us_aqi', 'european_aqi'],\n      dtype='object')",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "nilai"
+       ],
+       "baris": [
+        [
+         "pm10",
+         "float64"
+        ],
+        [
+         "pm2_5",
+         "float64"
+        ],
+        [
+         "carbon_monoxide",
+         "float64"
+        ],
+        [
+         "nitrogen_dioxide",
+         "float64"
+        ],
+        [
+         "sulphur_dioxide",
+         "float64"
+        ],
+        [
+         "ozone",
+         "float64"
+        ],
+        [
+         "aerosol_optical_depth",
+         "float64"
+        ],
+        [
+         "dust",
+         "float64"
+        ],
+        [
+         "uv_index",
+         "float64"
+        ],
+        [
+         "us_aqi",
+         "float64"
+        ],
+        [
+         "european_aqi",
+         "float64"
+        ]
+       ],
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 6,
+     "judul": "Cek Whitespace",
+     "item": [
+      {
+       "jenis": "teks",
+       "isi": "['pm10', 'pm2_5', 'carbon_monoxide', 'nitrogen_dioxide', 'sulphur_dioxide', 'ozone', 'aerosol_optical_depth', 'dust', 'uv_index', 'us_aqi', 'european_aqi']",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "kolom teks: []",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 7,
+     "judul": "Cek Duplikat",
+     "item": [
+      {
+       "jenis": "teks",
+       "isi": "tanggal duplikat: 0",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "baris duplikat penuh: 0",
+       "keterangan": null
+      },
+      {
+       "jenis": "markdown",
+       "isi": "Jika ada tanggal duplikat, simpan yang pertama (jalankan sel ini hanya bila hasil di atas lebih dari 0; aman dijalankan kalau 0)."
+      },
+      {
+       "jenis": "teks",
+       "isi": "(1294, 11)",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 8,
+     "judul": "Tanggal Hilang dan Urutan",
+     "item": [
+      {
+       "jenis": "teks",
+       "isi": "urut naik: True\ntanggal hilang: 0",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 9,
+     "judul": "Validasi Logika",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "US AQI harus berada di rentang 0 sampai 500 dan tidak boleh negatif. Polutan juga tidak boleh negatif."
+      },
+      {
+       "jenis": "teks",
+       "isi": "min: 13.75 | max: 203.0\nsemua di 0-500: True\njumlah negatif: 0",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "us_aqi"
+       ],
+       "baris": [
+        [
+         "us_aqi",
+         "1.000"
+        ],
+        [
+         "pm2_5",
+         "0.884"
+        ],
+        [
+         "pm10",
+         "0.860"
+        ],
+        [
+         "ozone",
+         "0.775"
+        ],
+        [
+         "nitrogen_dioxide",
+         "0.608"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "us_aqi",
+        "pm2_5",
+        "pm10"
+       ],
+       "baris": [
+        [
+         "2022-12-15",
+         "13.750000",
+         "0.641667",
+         "0.920833"
+        ],
+        [
+         "2022-12-14",
+         "32.041667",
+         "0.712500",
+         "1.033333"
+        ],
+        [
+         "2022-12-29",
+         "45.375000",
+         "11.512500",
+         "16.795833"
+        ],
+        [
+         "2023-01-01",
+         "46.083333",
+         "13.666667",
+         "19.933333"
+        ],
+        [
+         "2023-01-25",
+         "47.583333",
+         "12.887500",
+         "18.654167"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "us_aqi",
+        "pm2_5",
+        "pm10"
+       ],
+       "baris": [
+        [
+         "2023-06-06",
+         "203.000000",
+         "136.591667",
+         "196.954167"
+        ],
+        [
+         "2025-08-26",
+         "199.375000",
+         "114.208333",
+         "114.658333"
+        ],
+        [
+         "2023-05-23",
+         "199.083333",
+         "127.095833",
+         "182.608333"
+        ],
+        [
+         "2023-07-27",
+         "199.083333",
+         "111.820833",
+         "160.600000"
+        ],
+        [
+         "2022-12-07",
+         "198.541667",
+         "77.729167",
+         "112.366667"
+        ]
+       ],
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 10,
+     "judul": "Imputasi Dua Hari Anomali",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Pada **2022-12-14** dan **2022-12-15**, NO2 bernilai persis 0, sedangkan CO, SO2, dan PM turun sekitar 97 sampai 100% dari median dalam dua hari. Penurunan sebesar itu pada kota berpenduduk 8,5 juta orang tidak lazim, dan lebih mirip gangguan pada data model CAMS daripada hujan lebat (dugaan, belum diverifikasi ke sumber).\n\nKarena hanya 2 dari 1.294 hari, keduanya diperlakukan sebagai data hilang lalu diinterpolasi berdasarkan waktu. Urutan hari tetap utuh sehingga fitur lag tidak bergeser. Nilai hasil interpolasi **bukan data nyata** dan disebut di bagian keterbatasan."
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "us_aqi",
+        "pm2_5",
+        "nitrogen_dioxide"
+       ],
+       "baris": [
+        [
+         "2022-12-13",
+         "77.625",
+         "18.658333",
+         "33.083333"
+        ],
+        [
+         "2022-12-14",
+         "67.625",
+         "21.663889",
+         "37.602778"
+        ],
+        [
+         "2022-12-15",
+         "57.625",
+         "24.669444",
+         "42.122222"
+        ],
+        [
+         "2022-12-16",
+         "47.625",
+         "27.675000",
+         "46.641667"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "kosong: 0",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 11,
+     "judul": "Outlier (IQR)",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Outlier hanya dilihat dan dicatat, tidak dibuang. Hari dengan polusi sangat tinggi atau udara sangat bersih adalah kondisi nyata yang perlu dikenali model."
+      },
+      {
+       "jenis": "teks",
+       "isi": "Q1=132.3  Q3=172.1  IQR=39.7\nbatas: 72.7 sampai 231.7\njumlah outlier: 69",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "us_aqi",
+        "pm2_5",
+        "pm10"
+       ],
+       "baris": [
+        [
+         "2022-12-29",
+         "45.375000",
+         "11.512500",
+         "16.795833"
+        ],
+        [
+         "2023-01-01",
+         "46.083333",
+         "13.666667",
+         "19.933333"
+        ],
+        [
+         "2023-01-25",
+         "47.583333",
+         "12.887500",
+         "18.654167"
+        ],
+        [
+         "2022-12-16",
+         "47.625000",
+         "27.675000",
+         "40.800000"
+        ],
+        [
+         "2022-12-30",
+         "49.666667",
+         "14.216667",
+         "20.666667"
+        ],
+        [
+         "...",
+         "...",
+         "...",
+         "..."
+        ],
+        [
+         "2024-12-14",
+         "71.666667",
+         "19.029167",
+         "19.816667"
+        ],
+        [
+         "2024-12-13",
+         "71.708333",
+         "27.429167",
+         "29.070833"
+        ],
+        [
+         "2025-02-06",
+         "71.833333",
+         "36.733333",
+         "37.104167"
+        ],
+        [
+         "2023-04-13",
+         "72.291667",
+         "25.945833",
+         "37.458333"
+        ],
+        [
+         "2022-11-21",
+         "72.625000",
+         "24.462500",
+         "35.691667"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "[69 rows x 3 columns]",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "pm10               rendah:   0 | tinggi:   2\npm2_5              rendah:   0 | tinggi:   5\ncarbon_monoxide    rendah:   0 | tinggi:  27\nnitrogen_dioxide   rendah:   0 | tinggi:  33\nsulphur_dioxide    rendah:   0 | tinggi:   0\nozone              rendah:   0 | tinggi:   0",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 12,
+     "judul": "Filter dan Sort",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "`european_aqi` dibuang karena diturunkan dari polutan yang sama dengan `us_aqi` (bocor bila dipakai sebagai fitur). `dust` dibuang karena hampir seluruh nilainya nol."
+      },
+      {
+       "jenis": "teks",
+       "isi": "urut naik: True\ntanggal unik: True",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "pm10",
+        "pm2_5",
+        "carbon_monoxide",
+        "nitrogen_dioxide",
+        "sulphur_dioxide",
+        "ozone",
+        "aerosol_optical_depth",
+        "dust",
+        "uv_index",
+        "us_aqi",
+        "european_aqi"
+       ],
+       "baris": [
+        [
+         "2022-08-05",
+         "118.725000",
+         "82.300000",
+         "3027.375000",
+         "96.512500",
+         "24.420833",
+         "118.583333",
+         "1.030417",
+         "0.0",
+         "1.127083",
+         "187.588235",
+         "109.588235"
+        ],
+        [
+         "2022-08-06",
+         "134.883333",
+         "93.520833",
+         "3394.375000",
+         "113.916667",
+         "21.829167",
+         "124.625000",
+         "1.111667",
+         "0.0",
+         "1.160417",
+         "184.083333",
+         "106.833333"
+        ],
+        [
+         "2022-08-07",
+         "144.145833",
+         "99.958333",
+         "4046.958333",
+         "124.112500",
+         "19.266667",
+         "105.750000",
+         "0.995000",
+         "0.0",
+         "1.506250",
+         "184.000000",
+         "121.458333"
+        ],
+        [
+         "2022-08-08",
+         "93.516667",
+         "65.162500",
+         "3171.833333",
+         "112.983333",
+         "17.733333",
+         "49.041667",
+         "0.650000",
+         "0.0",
+         "2.060417",
+         "162.750000",
+         "103.791667"
+        ],
+        [
+         "2022-08-09",
+         "131.416667",
+         "90.675000",
+         "3124.833333",
+         "110.279167",
+         "25.158333",
+         "108.250000",
+         "0.936250",
+         "0.0",
+         "1.614583",
+         "173.791667",
+         "102.708333"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "proporsi dust = 0: 0.944\n['pm10', 'pm2_5', 'carbon_monoxide', 'nitrogen_dioxide', 'sulphur_dioxide', 'ozone', 'aerosol_optical_depth', 'uv_index', 'us_aqi']\n(1294, 9)",
+       "keterangan": "dust: cek dulu seberapa banyak nilainya nol"
+      },
+      {
+       "jenis": "teks",
+       "isi": "                  pm10      pm2_5  carbon_monoxide  nitrogen_dioxide  \\\ndate                                                                   \n2022-08-05  118.725000  82.300000      3027.375000         96.512500   \n2022-08-06  134.883333  93.520833      3394.375000        113.916667   \n2022-08-07  144.145833  99.958333      4046.958333        124.112500   \n2022-08-08   93.516667  65.162500      3171.833333        112.983333   \n2022-08-09  131.416667  90.675000      3124.833333        110.279167   \n            sulphur_dioxide       ozone  aerosol_optical_depth  uv_index  \\\ndate                                                                       \n2022-08-05        24.420833  118.583333               1.030417  1.127083   \n2022-08-06        21.829167  124.625000               1.111667  1.160417   \n2022-08-07        19.266667  105.750000               0.995000  1.506250   \n2022-08-08        17.733333   49.041667               0.650000  2.060417   \n2022-08-09        25.158333  108.250000               0.936250  1.614583   \n                us_aqi  \ndate                    \n2022-08-05  187.588235  \n2022-08-06  184.083333  \n2022-08-07  184.000000  \n2022-08-08  162.750000  \n2022-08-09  173.791667",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "(1294, 9)\n2022-08-05 sampai 2026-02-18\nkosong: 0\nurut naik: True",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "nilai"
+       ],
+       "baris": [
+        [
+         "pm10",
+         "float64"
+        ],
+        [
+         "pm2_5",
+         "float64"
+        ],
+        [
+         "carbon_monoxide",
+         "float64"
+        ],
+        [
+         "nitrogen_dioxide",
+         "float64"
+        ],
+        [
+         "sulphur_dioxide",
+         "float64"
+        ],
+        [
+         "ozone",
+         "float64"
+        ],
+        [
+         "aerosol_optical_depth",
+         "float64"
+        ],
+        [
+         "uv_index",
+         "float64"
+        ],
+        [
+         "us_aqi",
+         "float64"
+        ]
+       ],
+       "keterangan": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "eda",
+   "nama": "EDA",
+   "bagian": [
+    {
+     "nomor": 13,
+     "judul": "EDA (Eksplorasi Data)",
+     "item": [
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s13_c42_0.png",
+       "judul": "Korelasi antar variabel",
+       "lebar": 844,
+       "tinggi": 743
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s13_c43_0.png",
+       "judul": "2. Distribusi tiap variabel",
+       "lebar": 1389,
+       "tinggi": 890
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s13_c44_0.png",
+       "judul": "US AQI Jakarta",
+       "lebar": 1141,
+       "tinggi": 409
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s13_c45_0.png",
+       "judul": "AQI per bulan",
+       "lebar": 1005,
+       "tinggi": 393
+      },
+      {
+       "jenis": "teks",
+       "isi": "autokorelasi lag 1: 0.855\nautokorelasi lag 2: 0.726\nautokorelasi lag 3: 0.637\nautokorelasi lag 7: 0.493\nautokorelasi lag 14: 0.403",
+       "keterangan": "5. Seberapa mirip hari ini dengan hari-hari sebelumnya"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "model",
+   "nama": "Fitur dan model",
+   "bagian": [
+    {
+     "nomor": 14,
+     "judul": "Target, Fitur Lag, dan Split",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Target adalah US AQI **besok** (`shift(-1)`). Split berdasarkan waktu (80% awal untuk latih, 20% akhir untuk uji), bukan acak, supaya model tidak \"melihat masa depan\"."
+      },
+      {
+       "jenis": "teks",
+       "isi": "train: (1028, 20) 2022-08-12 - 2025-06-04\ntest : (258, 20) 2025-06-05 - 2026-02-17",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 15,
+     "judul": "Normalisasi",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "`RobustScaler` (median dan IQR) dipilih karena fitur punya outlier di sisi tinggi. Scaler di-`fit` **hanya** pada data latih. Hanya Linear Regression yang memakai data ini; Random Forest dan XGBoost memakai data asli."
+      },
+      {
+       "jenis": "teks",
+       "isi": "SEBELUM (median, IQR):",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "median",
+        "IQR"
+       ],
+       "baris": [
+        [
+         "pm10",
+         "87.17",
+         "51.27"
+        ],
+        [
+         "pm2_5",
+         "63.32",
+         "31.16"
+        ],
+        [
+         "carbon_monoxide",
+         "2098.06",
+         "1166.06"
+        ],
+        [
+         "nitrogen_dioxide",
+         "57.86",
+         "26.31"
+        ],
+        [
+         "sulphur_dioxide",
+         "40.60",
+         "27.70"
+        ],
+        [
+         "ozone",
+         "83.00",
+         "62.09"
+        ],
+        [
+         "aerosol_optical_depth",
+         "0.73",
+         "0.58"
+        ],
+        [
+         "uv_index",
+         "1.56",
+         "0.60"
+        ],
+        [
+         "us_aqi",
+         "159.15",
+         "42.96"
+        ],
+        [
+         "aqi_lag1",
+         "159.15",
+         "42.90"
+        ],
+        [
+         "pm25_lag1",
+         "63.32",
+         "31.14"
+        ],
+        [
+         "aqi_lag2",
+         "159.15",
+         "42.90"
+        ],
+        [
+         "pm25_lag2",
+         "63.32",
+         "31.14"
+        ],
+        [
+         "aqi_lag3",
+         "159.15",
+         "42.90"
+        ],
+        [
+         "pm25_lag3",
+         "63.32",
+         "31.14"
+        ],
+        [
+         "aqi_lag7",
+         "159.15",
+         "42.90"
+        ],
+        [
+         "pm25_lag7",
+         "63.32",
+         "31.09"
+        ],
+        [
+         "aqi_rata7",
+         "158.80",
+         "38.48"
+        ],
+        [
+         "bulan_sin",
+         "0.00",
+         "1.73"
+        ],
+        [
+         "bulan_cos",
+         "0.00",
+         "1.37"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "SESUDAH (median harus ~0):",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "50%",
+        "std",
+        "min",
+        "max"
+       ],
+       "baris": [
+        [
+         "pm10",
+         "0.0",
+         "0.66",
+         "-1.37",
+         "2.14"
+        ],
+        [
+         "pm2_5",
+         "0.0",
+         "0.75",
+         "-1.66",
+         "2.58"
+        ],
+        [
+         "carbon_monoxide",
+         "0.0",
+         "0.80",
+         "-1.29",
+         "3.50"
+        ],
+        [
+         "nitrogen_dioxide",
+         "0.0",
+         "0.91",
+         "-1.57",
+         "3.84"
+        ],
+        [
+         "sulphur_dioxide",
+         "0.0",
+         "0.59",
+         "-1.31",
+         "1.41"
+        ],
+        [
+         "ozone",
+         "0.0",
+         "0.57",
+         "-1.18",
+         "1.27"
+        ],
+        [
+         "aerosol_optical_depth",
+         "-0.0",
+         "0.66",
+         "-1.08",
+         "2.43"
+        ],
+        [
+         "uv_index",
+         "0.0",
+         "0.71",
+         "-1.98",
+         "2.55"
+        ],
+        [
+         "us_aqi",
+         "0.0",
+         "0.83",
+         "-2.65",
+         "1.02"
+        ],
+        [
+         "aqi_lag1",
+         "0.0",
+         "0.83",
+         "-2.65",
+         "1.02"
+        ],
+        [
+         "pm25_lag1",
+         "0.0",
+         "0.75",
+         "-1.66",
+         "2.58"
+        ],
+        [
+         "aqi_lag2",
+         "0.0",
+         "0.83",
+         "-2.65",
+         "1.02"
+        ],
+        [
+         "pm25_lag2",
+         "0.0",
+         "0.75",
+         "-1.66",
+         "2.58"
+        ],
+        [
+         "aqi_lag3",
+         "0.0",
+         "0.83",
+         "-2.65",
+         "1.02"
+        ],
+        [
+         "pm25_lag3",
+         "0.0",
+         "0.75",
+         "-1.66",
+         "2.58"
+        ],
+        [
+         "aqi_lag7",
+         "0.0",
+         "0.83",
+         "-2.65",
+         "1.02"
+        ],
+        [
+         "pm25_lag7",
+         "0.0",
+         "0.75",
+         "-1.67",
+         "2.58"
+        ],
+        [
+         "aqi_rata7",
+         "0.0",
+         "0.79",
+         "-2.77",
+         "0.70"
+        ],
+        [
+         "bulan_sin",
+         "0.0",
+         "0.41",
+         "-0.58",
+         "0.58"
+        ],
+        [
+         "bulan_cos",
+         "0.0",
+         "0.51",
+         "-0.73",
+         "0.73"
+        ]
+       ],
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 16,
+     "judul": "Latih dan Bandingkan Model",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Baseline \"besok = hari ini\" dipakai sebagai pembanding: model hanya berguna bila MAE ujinya lebih kecil dari baseline."
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "model",
+        "MAE",
+        "RMSE",
+        "R2"
+       ],
+       "baris": [
+        [
+         "3",
+         "XGBoost",
+         "8.43",
+         "11.33",
+         "0.869"
+        ],
+        [
+         "2                Random",
+         "Forest",
+         "9.47",
+         "12.39",
+         "0.844"
+        ],
+        [
+         "1            Linear",
+         "Regression",
+         "10.66",
+         "13.33",
+         "0.819"
+        ],
+        [
+         "0  Baseline (besok = hari",
+         "ini)",
+         "12.29",
+         "17.64",
+         "0.683"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "MAE",
+        "RMSE",
+        "R2"
+       ],
+       "baris": [
+        [
+         "XGBoost",
+         "8.43",
+         "11.33",
+         "0.869"
+        ],
+        [
+         "Random Forest",
+         "9.47",
+         "12.39",
+         "0.844"
+        ],
+        [
+         "Linear Regression",
+         "10.66",
+         "13.33",
+         "0.819"
+        ],
+        [
+         "Baseline (besok = hari ini)",
+         "12.29",
+         "17.64",
+         "0.683"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s16_c54_0.png",
+       "judul": "MAE dan RMSE",
+       "lebar": 1184,
+       "tinggi": 397
+      }
+     ]
+    },
+    {
+     "nomor": 17,
+     "judul": "Cek Overfitting",
+     "item": [
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "MAE latih",
+        "MAE uji",
+        "R2 latih",
+        "R2 uji",
+        "selisih MAE",
+        "MAE uji vs baseline"
+       ],
+       "baris": [
+        [
+         "Baseline (besok = hari ini)",
+         "13.76",
+         "12.29",
+         "0.713",
+         "0.683",
+         "-1.47",
+         "0.00"
+        ],
+        [
+         "Linear Regression",
+         "11.13",
+         "10.66",
+         "0.840",
+         "0.819",
+         "-0.47",
+         "-1.63"
+        ],
+        [
+         "Random Forest",
+         "3.50",
+         "9.47",
+         "0.983",
+         "0.844",
+         "5.97",
+         "-2.82"
+        ],
+        [
+         "XGBoost",
+         "3.75",
+         "8.43",
+         "0.981",
+         "0.869",
+         "4.68",
+         "-3.86"
+        ]
+       ],
+       "keterangan": "Versi yang menerima prediksi langsung, bukan objek model"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tuning",
+   "nama": "Tuning dan model final",
+   "bagian": [
+    {
+     "nomor": 18,
+     "judul": "Tuning dengan GridSearchCV",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Memakai `TimeSeriesSplit` (bukan `cv=5` biasa yang mengacak waktu), dan hanya pada data latih."
+      },
+      {
+       "jenis": "teks",
+       "isi": "Fitting 5 folds for each of 36 candidates, totalling 180 fits\nParameter terbaik: {'learning_rate': 0.05, 'max_depth': 4, 'n_estimators': 100, 'subsample': 0.8}\nMAE validasi (rata-rata lipatan): 9.71",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "param_learning_rate",
+        "param_max_depth",
+        "param_n_estimators",
+        "param_subsample",
+        "mean_test_score",
+        "std_test_score",
+        "MAE_valid"
+       ],
+       "baris": [
+        [
+         "0.05",
+         "4",
+         "100",
+         "0.8",
+         "-9.714",
+         "0.792",
+         "9.714"
+        ],
+        [
+         "0.05",
+         "3",
+         "100",
+         "0.8",
+         "-9.763",
+         "0.785",
+         "9.763"
+        ],
+        [
+         "0.05",
+         "4",
+         "300",
+         "0.8",
+         "-9.763",
+         "0.739",
+         "9.763"
+        ],
+        [
+         "0.10",
+         "5",
+         "100",
+         "0.8",
+         "-9.830",
+         "0.794",
+         "9.830"
+        ],
+        [
+         "0.10",
+         "5",
+         "300",
+         "0.8",
+         "-9.845",
+         "0.779",
+         "9.845"
+        ],
+        [
+         "0.05",
+         "5",
+         "100",
+         "0.8",
+         "-9.865",
+         "0.911",
+         "9.865"
+        ],
+        [
+         "0.03",
+         "5",
+         "300",
+         "0.8",
+         "-9.895",
+         "0.989",
+         "9.895"
+        ],
+        [
+         "0.05",
+         "5",
+         "300",
+         "0.8",
+         "-9.895",
+         "0.850",
+         "9.895"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "markdown",
+       "isi": "Delapan kombinasi teratas berbeda sangat tipis dibanding simpangan antar lipatan, jadi tuning tidak menemukan pemenang yang jelas. Dua kandidat dibandingkan: juara grid dan versi sederhana (kedalaman 3)."
+      },
+      {
+       "jenis": "teks",
+       "isi": "xgb_juara_grid dan xgb_sederhana siap",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "MAE latih",
+        "MAE uji",
+        "R2 latih",
+        "R2 uji",
+        "selisih MAE"
+       ],
+       "baris": [
+        [
+         "Baseline (besok = hari ini)",
+         "13.76",
+         "12.29",
+         "0.713",
+         "0.683",
+         "-1.47"
+        ],
+        [
+         "XGBoost sebelum tuning",
+         "3.75",
+         "8.43",
+         "0.981",
+         "0.869",
+         "4.68"
+        ],
+        [
+         "XGBoost juara grid",
+         "6.31",
+         "8.78",
+         "0.947",
+         "0.867",
+         "2.47"
+        ],
+        [
+         "XGBoost sederhana (depth 3)",
+         "7.64",
+         "8.83",
+         "0.922",
+         "0.862",
+         "1.19"
+        ]
+       ],
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 19,
+     "judul": "Validasi Kandidat dengan Lipatan Waktu",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Pemilihan model final sebaiknya tidak bergantung pada data uji. Di sini ketiga kandidat dibandingkan hanya dengan data latih lewat `TimeSeriesSplit`. Bila rata-rata MAE berselisih kurang dari simpangannya, kandidatnya setara dan dipilih yang paling sederhana."
+      },
+      {
+       "jenis": "teks",
+       "isi": "XGBoost awal (depth 4, 300 pohon)    MAE per lipatan: [11.64  9.1  10.14  9.17 10.82] | rata-rata 10.18 | simpangan 0.97\nXGBoost juara grid (depth 4)         MAE per lipatan: [10.67  8.82  9.89  8.77 10.42] | rata-rata 9.71 | simpangan 0.79\nXGBoost sederhana (depth 3)          MAE per lipatan: [10.23  8.85  9.73  9.02 10.98] | rata-rata 9.76 | simpangan 0.78",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 20,
+     "judul": "Model Final: XGBoost Kedalaman 3",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Dipilih karena paling stabil (selisih MAE latih dan uji paling kecil) dengan akurasi uji yang setara kandidat lain. Model dilatih hanya pada data latih; `best_xgb` didefinisikan **satu kali** di sini."
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "MAE",
+        "RMSE",
+        "R2"
+       ],
+       "baris": [
+        [
+         "Baseline (data uji)",
+         "12.29",
+         "17.64",
+         "0.683"
+        ],
+        [
+         "XGBoost depth 3 (data latih)",
+         "7.64",
+         "9.94",
+         "0.922"
+        ],
+        [
+         "XGBoost depth 3 (data uji)",
+         "8.83",
+         "11.63",
+         "0.862"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "selisih MAE uji - latih: 1.2",
+       "keterangan": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fitur",
+   "nama": "Feature importance",
+   "bagian": [
+    {
+     "nomor": 21,
+     "judul": "Feature Importance (Model Final)",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Dihitung pada `best_xgb` (model yang disimpan), bukan pada model awal."
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "XGBoost final",
+        "Random Forest"
+       ],
+       "baris": [
+        [
+         "pm2_5",
+         "0.535",
+         "0.795"
+        ],
+        [
+         "pm10",
+         "0.141",
+         "0.083"
+        ],
+        [
+         "ozone",
+         "0.060",
+         "0.013"
+        ],
+        [
+         "aerosol_optical_depth",
+         "0.038",
+         "0.008"
+        ],
+        [
+         "sulphur_dioxide",
+         "0.024",
+         "0.011"
+        ],
+        [
+         "aqi_lag3",
+         "0.020",
+         "0.006"
+        ],
+        [
+         "carbon_monoxide",
+         "0.019",
+         "0.008"
+        ],
+        [
+         "aqi_rata7",
+         "0.017",
+         "0.005"
+        ],
+        [
+         "us_aqi",
+         "0.015",
+         "0.013"
+        ],
+        [
+         "nitrogen_dioxide",
+         "0.015",
+         "0.008"
+        ],
+        [
+         "aqi_lag7",
+         "0.014",
+         "0.005"
+        ],
+        [
+         "pm25_lag7",
+         "0.014",
+         "0.005"
+        ],
+        [
+         "bulan_cos",
+         "0.013",
+         "0.003"
+        ],
+        [
+         "aqi_lag2",
+         "0.013",
+         "0.005"
+        ],
+        [
+         "uv_index",
+         "0.011",
+         "0.007"
+        ],
+        [
+         "pm25_lag1",
+         "0.011",
+         "0.006"
+        ],
+        [
+         "pm25_lag2",
+         "0.011",
+         "0.005"
+        ],
+        [
+         "aqi_lag1",
+         "0.010",
+         "0.005"
+        ],
+        [
+         "pm25_lag3",
+         "0.009",
+         "0.004"
+        ],
+        [
+         "bulan_sin",
+         "0.009",
+         "0.004"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s21_c68_1.png",
+       "judul": "Feature importance (bawaan model)",
+       "lebar": 889,
+       "tinggi": 690
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "naik MAE (poin AQI)",
+        "simpangan"
+       ],
+       "baris": [
+        [
+         "pm2_5",
+         "12.669",
+         "0.867"
+        ],
+        [
+         "pm10",
+         "2.310",
+         "0.197"
+        ],
+        [
+         "ozone",
+         "1.089",
+         "0.216"
+        ],
+        [
+         "carbon_monoxide",
+         "0.824",
+         "0.227"
+        ],
+        [
+         "us_aqi",
+         "0.642",
+         "0.176"
+        ],
+        [
+         "nitrogen_dioxide",
+         "0.622",
+         "0.113"
+        ],
+        [
+         "pm25_lag1",
+         "0.084",
+         "0.047"
+        ],
+        [
+         "pm25_lag7",
+         "0.050",
+         "0.062"
+        ],
+        [
+         "aerosol_optical_depth",
+         "0.044",
+         "0.037"
+        ],
+        [
+         "pm25_lag2",
+         "0.014",
+         "0.011"
+        ],
+        [
+         "aqi_lag2",
+         "0.012",
+         "0.015"
+        ],
+        [
+         "uv_index",
+         "0.012",
+         "0.026"
+        ],
+        [
+         "aqi_lag1",
+         "0.010",
+         "0.033"
+        ],
+        [
+         "bulan_cos",
+         "0.004",
+         "0.043"
+        ],
+        [
+         "sulphur_dioxide",
+         "-0.001",
+         "0.019"
+        ],
+        [
+         "pm25_lag3",
+         "-0.004",
+         "0.023"
+        ],
+        [
+         "aqi_lag3",
+         "-0.006",
+         "0.046"
+        ],
+        [
+         "aqi_lag7",
+         "-0.014",
+         "0.013"
+        ],
+        [
+         "bulan_sin",
+         "-0.016",
+         "0.008"
+        ],
+        [
+         "aqi_rata7",
+         "-0.038",
+         "0.027"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s21_c69_1.png",
+       "judul": "Permutation importance XGBoost final (data uji)",
+       "lebar": 889,
+       "tinggi": 690
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "nilai"
+       ],
+       "baris": [
+        [
+         "sulphur_dioxide",
+         "17.72"
+        ],
+        [
+         "aqi_lag1",
+         "13.77"
+        ],
+        [
+         "pm25_lag1",
+         "-13.50"
+        ],
+        [
+         "pm2_5",
+         "11.38"
+        ],
+        [
+         "nitrogen_dioxide",
+         "11.08"
+        ],
+        [
+         "ozone",
+         "10.63"
+        ],
+        [
+         "bulan_sin",
+         "-8.14"
+        ],
+        [
+         "bulan_cos",
+         "-4.16"
+        ],
+        [
+         "uv_index",
+         "3.65"
+        ],
+        [
+         "us_aqi",
+         "3.02"
+        ],
+        [
+         "aerosol_optical_depth",
+         "2.93"
+        ],
+        [
+         "carbon_monoxide",
+         "2.01"
+        ],
+        [
+         "aqi_lag3",
+         "1.95"
+        ],
+        [
+         "aqi_lag2",
+         "-1.38"
+        ],
+        [
+         "aqi_rata7",
+         "-1.38"
+        ],
+        [
+         "pm25_lag2",
+         "-1.25"
+        ],
+        [
+         "pm10",
+         "0.94"
+        ],
+        [
+         "pm25_lag7",
+         "0.87"
+        ],
+        [
+         "aqi_lag7",
+         "0.54"
+        ],
+        [
+         "pm25_lag3",
+         "-0.01"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s21_c70_1.png",
+       "judul": "Koefisien Linear Regression (data ter-normalisasi)",
+       "lebar": 889,
+       "tinggi": 690
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "XGBoost final"
+       ],
+       "baris": [
+        [
+         "PM2.5 (hari ini + riwayat)",
+         "0.580"
+        ],
+        [
+         "pm10",
+         "0.141"
+        ],
+        [
+         "AQI (hari ini + riwayat)",
+         "0.089"
+        ],
+        [
+         "ozone",
+         "0.060"
+        ],
+        [
+         "aerosol_optical_depth",
+         "0.038"
+        ],
+        [
+         "sulphur_dioxide",
+         "0.024"
+        ],
+        [
+         "Musim (bulan)",
+         "0.022"
+        ],
+        [
+         "carbon_monoxide",
+         "0.019"
+        ],
+        [
+         "nitrogen_dioxide",
+         "0.015"
+        ],
+        [
+         "uv_index",
+         "0.011"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s21_c71_1.png",
+       "judul": "Importance XGBoost per variabel",
+       "lebar": 790,
+       "tinggi": 490
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "prediksi",
+   "nama": "Prediksi dan kesalahan",
+   "bagian": [
+    {
+     "nomor": 22,
+     "judul": "Simpan Model dan Daftar Kolom Fitur",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Urutan kolom fitur wajib sama persis saat memprediksi (misalnya di FastAPI), jadi disimpan bersama model."
+      },
+      {
+       "jenis": "teks",
+       "isi": "kolom sama: True\nprediksi sama: True",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 23,
+     "judul": "Prediksi AQI Besok",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Model butuh riwayat minimal 7 hari karena fiturnya memakai lag 7 hari dan rata-rata 7 hari. Fungsi `buat_fitur` harus identik dengan yang dipakai saat latihan (diverifikasi terhadap `X`)."
+      },
+      {
+       "jenis": "teks",
+       "isi": "sama dengan X: True",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "Fitur dari   : 2026-02-18\nPrediksi AQI : 2026-02-19 = 144.8  (Tidak sehat untuk kelompok sensitif)",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 24,
+     "judul": "Simpan Prediksi ke CSV",
+     "item": [
+      {
+       "jenis": "teks",
+       "isi": "(258, 7)\nMAE dari CSV: 8.83",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "  tanggal_fitur tanggal_target  aqi_aktual  aqi_prediksi  selisih  \\\n0    2025-06-05     2025-06-06      186.92    181.320007    -5.60   \n1    2025-06-06     2025-06-07      168.33    176.160004     7.83   \n2    2025-06-07     2025-06-08      175.62    173.460007    -2.16   \n3    2025-06-08     2025-06-09      184.00    174.289993    -9.71   \n4    2025-06-09     2025-06-10      190.88    180.389999   -10.49   \n  kategori_aktual kategori_prediksi  \n0     Tidak sehat       Tidak sehat  \n1     Tidak sehat       Tidak sehat  \n2     Tidak sehat       Tidak sehat  \n3     Tidak sehat       Tidak sehat  \n4     Tidak sehat       Tidak sehat",
+       "keterangan": null
+      }
+     ]
+    },
+    {
+     "nomor": 25,
+     "judul": "Plot Aktual vs Prediksi",
+     "item": [
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s25_c81_0.png",
+       "judul": "AQI besok: aktual vs prediksi (periode uji)",
+       "lebar": 1289,
+       "tinggi": 790
+      },
+      {
+       "jenis": "gambar",
+       "url": "/api/laporan-model/gambar/s25_c82_0.png",
+       "judul": "Aktual vs prediksi",
+       "lebar": 490,
+       "tinggi": 490
+      }
+     ]
+    },
+    {
+     "nomor": 26,
+     "judul": "Analisis Kesalahan",
+     "item": [
+      {
+       "jenis": "markdown",
+       "isi": "Di mana model meleset paling jauh, dan apakah model hanya mengikuti AQI hari ini?"
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "tanggal_target",
+        "aqi_aktual",
+        "aqi_prediksi",
+        "selisih"
+       ],
+       "baris": [
+        [
+         "229",
+         "2026-01-21",
+         "95.71",
+         "143.259995",
+         "47.55"
+        ],
+        [
+         "191",
+         "2025-12-14",
+         "93.54",
+         "132.360001",
+         "38.82"
+        ],
+        [
+         "244",
+         "2026-02-05",
+         "92.29",
+         "130.460007",
+         "38.17"
+        ],
+        [
+         "227",
+         "2026-01-19",
+         "146.42",
+         "109.739998",
+         "-36.68"
+        ],
+        [
+         "209",
+         "2026-01-01",
+         "105.54",
+         "137.800003",
+         "32.26"
+        ],
+        [
+         "153",
+         "2025-11-06",
+         "95.17",
+         "126.970001",
+         "31.80"
+        ],
+        [
+         "12",
+         "2025-06-18",
+         "142.25",
+         "171.169998",
+         "28.92"
+        ],
+        [
+         "199",
+         "2025-12-22",
+         "125.96",
+         "97.220001",
+         "-28.74"
+        ],
+        [
+         "91",
+         "2025-09-05",
+         "175.38",
+         "146.929993",
+         "-28.45"
+        ],
+        [
+         "162",
+         "2025-11-15",
+         "131.29",
+         "104.690002",
+         "-26.60"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "count",
+        "mean"
+       ],
+       "baris": [
+        [
+         "(0, 100]",
+         "28",
+         "10.98"
+        ],
+        [
+         "(100, 150]",
+         "43",
+         "13.24"
+        ],
+        [
+         "(150, 175]",
+         "128",
+         "7.13"
+        ],
+        [
+         "(175, 250]",
+         "59",
+         "8.30"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "korelasi prediksi vs AQI hari ini: 0.939\nkorelasi prediksi vs AQI aktual  : 0.934",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "korelasi perubahan aktual vs prediksi: 0.791\nhari dengan perubahan >= 20 poin     : 45 dari 258\narah benar (semua hari)              : 0.717\narah benar (perubahan besar)         : 0.933",
+       "keterangan": "Apakah model menebak ARAH perubahan AQI dari hari ini ke besok?"
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "count",
+        "mean"
+       ],
+       "baris": [
+        [
+         "1",
+         "31",
+         "11.51"
+        ],
+        [
+         "2",
+         "18",
+         "11.30"
+        ],
+        [
+         "6",
+         "25",
+         "8.05"
+        ],
+        [
+         "7",
+         "31",
+         "5.13"
+        ],
+        [
+         "8",
+         "31",
+         "8.58"
+        ],
+        [
+         "9",
+         "30",
+         "8.41"
+        ],
+        [
+         "10",
+         "31",
+         "7.18"
+        ],
+        [
+         "11",
+         "30",
+         "10.06"
+        ],
+        [
+         "12",
+         "31",
+         "10.19"
+        ]
+       ],
+       "keterangan": "Apakah model menebak ARAH perubahan AQI dari hari ini ke besok?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "multikota",
+   "nama": "Multi-kota",
+   "bagian": [
+    {
+     "nomor": "multi",
+     "judul": "Validasi multi-kota",
+     "item": [
+      {
+       "jenis": "teks",
+       "isi": "jakarta     hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\nbandung     hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\nsemarang    hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\nyogyakarta  hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\nsurabaya    hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\nmedan       hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\npalembang   hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\npontianak   hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\nbalikpapan  hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\nmakassar    hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\ndenpasar    hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\njayapura    hari:  1546 | 2022-08-13 s/d 2026-11-05 | anomali diperbaiki: 2\ntotal baris: (18552, 22)",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "train: (12324, 22) | test: (6228, 22) | periode uji: 2025-06-05 s/d 2026-11-05",
+       "keterangan": null
+      },
+      {
+       "jenis": "tabel",
+       "kolom": [
+        "",
+        "hari_uji",
+        "mae_baseline",
+        "mae_model",
+        "mae_kota_baru",
+        "bias_model",
+        "perbaikan_%",
+        "perbaikan_kota_baru_%",
+        "tervalidasi"
+       ],
+       "baris": [
+        [
+         "jakarta",
+         "519",
+         "11.92",
+         "8.92",
+         "12.94",
+         "-2.99",
+         "25.13",
+         "-8.59",
+         "True"
+        ],
+        [
+         "bandung",
+         "519",
+         "9.67",
+         "8.09",
+         "8.65",
+         "-3.98",
+         "16.31",
+         "10.55",
+         "True"
+        ],
+        [
+         "semarang",
+         "519",
+         "14.56",
+         "12.96",
+         "17.37",
+         "-2.51",
+         "10.94",
+         "-19.35",
+         "False"
+        ],
+        [
+         "yogyakarta",
+         "519",
+         "22.43",
+         "14.47",
+         "15.04",
+         "-3.69",
+         "35.46",
+         "32.93",
+         "True"
+        ],
+        [
+         "surabaya",
+         "519",
+         "14.02",
+         "10.43",
+         "10.61",
+         "0.33",
+         "25.62",
+         "24.32",
+         "True"
+        ],
+        [
+         "medan",
+         "519",
+         "14.32",
+         "9.93",
+         "10.44",
+         "-0.58",
+         "30.67",
+         "27.10",
+         "True"
+        ],
+        [
+         "palembang",
+         "519",
+         "7.72",
+         "5.71",
+         "5.80",
+         "-1.21",
+         "26.02",
+         "24.85",
+         "True"
+        ],
+        [
+         "pontianak",
+         "519",
+         "11.37",
+         "8.43",
+         "8.59",
+         "-2.71",
+         "25.86",
+         "24.45",
+         "True"
+        ],
+        [
+         "balikpapan",
+         "519",
+         "5.69",
+         "3.73",
+         "3.85",
+         "0.65",
+         "34.37",
+         "32.26",
+         "True"
+        ],
+        [
+         "makassar",
+         "519",
+         "7.91",
+         "4.81",
+         "4.83",
+         "-0.51",
+         "39.17",
+         "38.90",
+         "True"
+        ],
+        [
+         "denpasar",
+         "519",
+         "5.35",
+         "4.07",
+         "4.26",
+         "0.66",
+         "23.87",
+         "20.35",
+         "True"
+        ],
+        [
+         "jayapura",
+         "519",
+         "6.87",
+         "4.61",
+         "5.33",
+         "1.34",
+         "32.90",
+         "22.48",
+         "True"
+        ]
+       ],
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "kota tervalidasi: ['jakarta', 'bandung', 'yogyakarta', 'surabaya', 'medan', 'palembang', 'pontianak', 'balikpapan', 'makassar', 'denpasar', 'jayapura']",
+       "keterangan": null
+      },
+      {
+       "jenis": "teks",
+       "isi": "3.4.1 1.6.1",
+       "keterangan": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
